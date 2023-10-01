@@ -67,3 +67,100 @@ while isNumberFound {
     }
     number1+=1
 }
+
+
+//მეორე დავალება
+//1.შექმენით array, შემდეგ პირველ და ბოლო ელემენტს გაუცვალეთ ადგილი, გამზადებული ან უკვე არსებული ფუნქციის გარეშე.  (array-ის ტიპს არაქვს მნიშვნელობა)
+var numbers = [9,10,-10,200,40]
+numbers.swapAt(0, 4)
+print(numbers)
+
+//2.შექმენით array, მასში წაშალეთ ნახევარი ელემენტები, თუ კენტი რაოდენობის იქნა დატოვეთ ნაკლები და წაშალეთ მეტი.  მაგ.: თუ იყო 11 ელემენტი 5 დატოვეთ და 6 წაშალეთ. და დაბეჭდეთ მიღებული შედეგი. (array-ის ტიპს არაქვს მნიშვნელობა).
+var age = [2, 4, 6, 20, 25, 26, 40]
+age.removeAll { $0 % 2 == 0 }
+print(age)
+
+//3.შექმენით Int-ების array, შეავსეთ ის 0-იდან 10-ის ჩათვლით რიცხვებით. loop-ის  გამოყენებით დაშალეთ ეს array 2 array-იდ. ერთში გადაიტანეთ კენტი რიცხვები, მეორეში კი ლუწი რიცხვები, დაბეჭდეთ ორივე მიღებული array
+var number: [Int] = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+for i in 0...10 {
+    number.append(i)
+}
+var evenNumber = [Int]()
+var oddNumber = [Int]()
+
+for number in number {
+    if number % 2 == 0 {
+        evenNumber.append(number)
+    } else {
+        oddNumber.append(number)
+    }
+}
+print("evenNumber: \(evenNumber)")
+print("oddNumber: \(oddNumber)")
+//რატომ გააორმაგა ვერ მივხვდი;////
+
+//4.შექმენით Double-ების array, შეავსეთ ის თქვენთვის სასურველი რიცხვებით.  loop-ის გამოყენებით იპოვეთ ყველაზე დიდი რიცხვი ამ array-ში.
+let numbers1: [Double] = [-1000.89, 2.22, 5.243, 80.1]
+let largest = numbers1.max()
+print(largest)
+
+//5.შექმენით ორი Int-ების array, შეავსეთ პირველი array 8, 4, 9, 9, 0, 2, და მეორე array 1, 0, 9, 2, 3, 7, 0, 1 ამ რიცხვებით. გააერთიანეთ ეს ორი array ერთ დასორტილ array-ში, ანუ შედეგი უნდა მიიღოთ ასეთი: 0, 0, 0, 1, 1, 2, 2, 3, 4, 7, 8, 9, 9, არ გამოიყენოთ sorted() ან რაიმე სხვა უკვე არსებული მეთოდი swift-იდან. დაბეჭდეთ მიღებული დასორტილი array.
+
+var array1: [Int] = [8, 4, 9, 9, 0, 2]
+var array2: [Int] = [1, 0, 9, 2, 3, 7, 0, 1]
+
+array1.append(contentsOf: [1, 0, 9, 2, 3, 7, 0, 1])
+print(array1)
+
+var unsortedArray = [8, 4, 9, 9, 0, 2, 1, 0, 9, 2, 3, 7, 0, 1]
+for i in stride(from: unsortedArray.count-1, to: 0, by: -1) {
+    for j in 1...i {
+        if unsortedArray[j-1] > unsortedArray[j] {
+            let tmp = unsortedArray[j-1]
+            unsortedArray[j-1] = unsortedArray[j]
+            unsortedArray[j] = tmp
+        }
+    }
+}
+print(unsortedArray)
+
+//6 შექმენით String ტიპის ცვლადი და შეამოწმეთ არის თუ არა ყველა ჩარაქტერი ამ სტრინგში უნიკალური. გამოიყენეთ Set-ი ამ თასკის შესასრულებლად.
+var names = Set<String>()
+names.insert("Saba")
+names.insert("Lika")
+names.insert("Nika")
+names.insert("Nika")
+print(names)
+
+//7 შექმენით ორი Int-ების Set. გამოიყენეთ მათზე Set-ის მეთოდები როგორიცაა: union, intersection და difference. დაბეჭდეთ შედეგები.
+
+let numbers3: Set = [10,1000,102,44,45]
+let numbers4: Set = [5,23,43,12,44,214]
+let numbers3AndNumbers4 = numbers3.union(numbers4)
+print(numbers3AndNumbers4)
+
+let bothNumbers3AndNumbers4 = numbers4.intersection(numbers3)
+print(bothNumbers3AndNumbers4)
+print("Subtraction: ", numbers3.subtracting(numbers4))
+
+//8 შექმენით ორი String-ის Set. შეამოწმეთ არის თუ არა პირველი String-ის Set, მეორეს sub-Set-ი. დაბეჭდეთ შედეგი.
+let Fruit: Set = ["banana", "pear", "lemon", "strawberry", "watermellon"]
+let yellowFruit: Set = ["banana", "pear", "lemon"]
+print(yellowFruit.isSubset(of: Fruit))
+
+//9 შექმენით array, შეავსეთ ისინი ელემენტებით. შეამოწმეთ და დაბეჭდეთ: "array-ში ყველა ელემენტი განსხვავებულია" ან "array შეიცავს მსგავს ელემენტებს"  (array-ს ტიპს არაქვს მნიშვნელობა.)
+var newArray: [Int] = [8, 4, 9, 0, 2]
+print("array-ში ყველა ელემენტი განსხვავებულია")
+
+//10 შექმენით Dictionary, სადაც იქნება ფილმის სახელები და მათი რეიტინგები, რეიტინგი (0-10). დაამატეთ მინიმუმ 5 ფილმი, ამის შემდეგ გამოთვალეთ ამ Dictionary-ში არსებული ფილმების საშვალო რეიტინგი. დაბეჭდეთ მიღებული შედეგი.
+var movieDictionary = [String: Double]()
+movieDictionary["Barbie"] = 7.1
+movieDictionary["Elemental"] = 7.0
+movieDictionary["Talk to Me"] = 7.2
+movieDictionary["Love at First Sight"] = 6.9
+movieDictionary["Jawan"] = 7.6
+
+print(movieDictionary.values)
+let values = [7.6, 7.1, 6.9, 7.2, 7.0]
+let average = values.reduce(0.0, +) / Double(numbers.count)
+print(average)
