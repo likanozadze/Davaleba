@@ -164,3 +164,118 @@ print(movieDictionary.values)
 let values = [7.6, 7.1, 6.9, 7.2, 7.0]
 let average = values.reduce(0.0, +) / Double(numbers.count)
 print(average)
+
+
+//მესამე დავალება
+//1.შექმენით function რომლის მეშვეობითაც გამოითვლით ფაქტორიალს. function იღებს ერთ Int ტიპის ცვლადს და აბრუნებს ფაქტორიალს, ანუ მაგალითად თუ გადავაწვდით 5-იანს function-მა უნდა დაგვიბრუნოს 120 რომელიც მიიღო შემდეგი გამოთვლის შედეგად 5*4*3*2*1. არ გამოიყენოთ მზა ფუნქციები.
+var finalNumber: Int = 1
+func factorial(_ numb: Int) -> Int{
+    if numb != 0{
+        for i in 1...numb {
+            finalNumber = finalNumber * i
+        }
+    }else{
+        return finalNumber
+    }
+    return finalNumber
+}
+print(factorial(5))
+print()
+
+//2.შექმენით function რომელიც აგენერირებს ფიბონაჩის პირველ 20 რიცხვს. არ გამოიყენოთ მზა ფუნქციები.
+func calculateFibonacciNumbers(_ count: Int) -> [Int] {
+    var fibonacciNumbers = [0,1]
+    while fibonacciNumbers.count < count {
+        let followingNumber = fibonacciNumbers[fibonacciNumbers.count - 1] + fibonacciNumbers[fibonacciNumbers.count - 2]
+        fibonacciNumbers.append(followingNumber)
+    }
+    return fibonacciNumbers
+}
+let firt20fibonacciNumbers = calculateFibonacciNumbers(20)
+print(firt20fibonacciNumbers)
+
+
+//3.შექმენით function რომელიც მიიღებს String-ს, function-მა უნდა შეამოწმოს პალინდრომია (წინიდანაც და უკნიდანაც იკითხება ერთნაირად) თუ არა ეს String-ი. მაგალითად "racecar" ამ შემთხვევაში ფუნქციამ უნდა დააბრუნოს true. არ გამოიყენოთ მზა ფუნქციები. შეგიძლიათ მეორე solution-ი მზა ფუნქციის გამოყენებით გვაჩვენოთ.
+
+
+func isPalindrome(_ input: String) -> Bool {
+
+    let inputLowerCased = input.lowercased()
+    let characters = Array(inputLowerCased)
+    let length = characters.count
+    for i in 0..<length/2 {
+        if characters[i] != characters[length - 1 - i] {
+
+            return false
+        }
+    }
+    return true
+}
+let input1 = "martivi yopila developeroba"
+
+print(isPalindrome(input1))
+
+
+//4. შექმენით function რომელიც გადაცემულ რიცხვების array-ს ააკვარდატებს, დაპრინტავს და დააბრუნებს მნიშვნელობას.
+let numbers = [1, 2, 3, 4]
+func arraySquared(_ numbers: [Int]) -> [Int] {
+    var squaredArray: [Int] = []
+    
+    for number in numbers {
+        let squaredValue = number * number
+        squaredArray.append(squaredValue)
+        print("The square of \(number) is \(squaredValue)")
+    }
+    
+    return squaredArray
+}
+let squaredValues = arraySquared(numbers)
+
+            
+//5.შექმენით function რომელიც დაითვლის სიტყვების რაოდენობას String-ში, ფუნქციამ უნდა მიიღოს String-ი, და დააბრუნოს dictionary, სიტყვებით და იმ რაოდენობით რამდენჯერ იყო ერთი და იგივე სიტყვა გამოყენებული String-ში. uppercase და lowercase ასოები უნდა იყოს დაჰენდლილი ერთნაირად, მაგალითად თუ function-s გადავაწვდით "TBC x USAID, tbc it academy, we are in TBC academy." function-მა უნდა დააბრუნოს ["tbc": 3, "academy": 2, "we": 1, "are": 1, "in": 1, "it": 1, "x": 1]
+    
+//6. შექმენით Closure რომელსაც გადაეცემა რიცხვი და დააბრუნებს ამ რიცხვის ორობით ჩანაწერს.
+let binary: (Int) -> String = { number in
+    let binaryString = String(number, radix: 2)
+    return binaryString
+}
+let number = 100
+let binaryRepresentation = binary(number)
+print("Binary representation of \(number): \(binaryRepresentation)")
+    
+//7. შექმენით Closure რომელიც გაფილტრავს(ანუ წაშლის) კენტ რიცხვებს Int-ების Array-დან.
+let arrayOfNumbers = [2, 3, 13, 22, 25]
+let filterOddNumbers: ([Int]) -> [Int] = { numbers in
+    let filteredNumbers = numbers.filter { $0 % 2 == 0 }
+    return filteredNumbers
+}
+let evenNumbers = filterOddNumbers(numbers)
+print("Even numbers: \(evenNumbers)")
+
+//8. შექმენით Closure რომელიც დამაპავს(ანუ გააკეთებს ქმედებას ყველა მასივის ელემენტზე) Int-ების Array-ის და თითოეულ ელემენტს გაათმაგებს.
+let numbersForMap = [13, 2, 14, 2]
+let multiplyBy10: ([Int]) -> [Int] = { numbers in
+    let multipliedNumbers = numbersForMap.map { $0 * 10 }
+    return multipliedNumbers
+}
+let multipliedValues = multiplyBy10(numbersForMap)
+print("Multiplied values: \(multipliedValues)")
+
+//9. გამოიყენეთ escaping closure სადაც 3 წამის შემდეგ დაბეჭდავს ჩაწოდებული მასივის ჯამს.
+import Foundation
+var number1 = [1, 2, 3, 4]
+func afterDelay(numbers: [Int], closure: @escaping (Int) -> ()) {
+    DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+        let sum = numbers.reduce(0, +)
+        closure(sum)
+    }
+}
+afterDelay(numbers: number1) { sum in
+    print("Sum after 3 seconds: \(sum)")
+}
+
+    //10. function-ს გადავცეთ String-ების array და დაგვიბრუნოს მხოლოდ კენტი რიცხვების მასივი. გამოიყენეთ high order functions.
+let inputArray = ["red", "?", "10", "5", "7"]
+let oddNumbers = inputArray.compactMap { Int($0) }
+                           .filter { $0 % 2 != 0 }
+print("Odd numbers: \(oddNumbers)")
