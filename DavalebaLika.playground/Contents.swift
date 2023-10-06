@@ -279,3 +279,157 @@ let inputArray = ["red", "?", "10", "5", "7"]
 let oddNumbers = inputArray.compactMap { Int($0) }
                            .filter { $0 % 2 != 0 }
 print("Odd numbers: \(oddNumbers)")
+
+
+//მეოთხე დავალება
+import Foundation
+////1. შექმენით enum-ი სახელით DayOfWeek შესაბამისი ქეისებით. დაწერეთ function რომელიც იღებს ამ ენამის ტიპს. function-მა უნდა და-print-ოს, გადაწოდებული დღე კვირის დღეა თუ დასვენების.
+enum DayOfWeek {
+    case monday
+    case tuesday
+    case wednesday
+    case thursday
+    case friday
+    case saturday
+    case sunday
+}
+
+func getTheStatus(day: DayOfWeek) -> String? {
+    switch day {
+    case .monday, .tuesday, .wednesday, .thursday, .friday:
+        return "Weekday"
+    case  .saturday, .sunday:
+        return "WeekEnd"
+    }
+}
+getTheStatus(day: .monday)
+
+
+//2. შექმენით enum-ი Weather შემდეგი ქეისებით, Sunny, Cloudy, Rainy და Snowy. ამ ქეისებს უნდა ჰქონდეს associated value Celsius-ის სახით. დაწერეთ function რომელიც მიიღებს ამ enum-ს, და მოგვცემს რეკომენდაციას რა უნდა ჩავიცვათ შესაბამისი ამინდის მიხედვით.
+
+enum Weather {
+    case sunny(temperature: Int)
+    case cloudy(temperature: Int)
+    case rainy(temperature: Int)
+    case snowy(temperature: Int)
+}
+
+let sunny = Weather.sunny(temperature: 28)
+let cloudy = Weather.cloudy(temperature: 12)
+let rainy = Weather.rainy(temperature: 16)
+let snowy = Weather.snowy(temperature: -10)
+
+func recommendation(for weather: Weather) -> String {
+    switch weather {
+    case .sunny(let temperature):
+        if temperature >= 32 {
+            return "Wear linen clothes, apply sunscreen and drink water"
+        } else if temperature >= 20 {
+            return "Wear something comfortable"
+        } else {
+            return "Wear appropriate clothing for a sunny day"
+        }
+    case .cloudy(let temperature):
+        if temperature <= 10 {
+            return "It's cloudy weather today. Don't forget your hat"
+        } else {
+            return "It's cloudy but not too cold. Dress comfortably."
+        }
+    case .rainy(let temperature):
+        if temperature >= 15 {
+            return "Don't forget your umbrellas"
+        } else {
+            return "Don't forget waterproof shoes"
+        }
+    case .snowy(let temperature):
+        if temperature <= -10 {
+            return "Baby, it's cold outside, stay inside"
+        } else {
+            return "Must stay at home"
+        }
+    }
+}
+
+print(recommendation(for: sunny))
+print(recommendation(for: cloudy))
+print(recommendation(for: rainy))
+print(recommendation(for: snowy))
+
+//3. შექმენით struct-ი Book, with properties როგორიცაა: title, author, publicationYear. ამის შემდეგ შექმენით array-ი Book-ის ტიპის, შექმენით რამოდენიმე Book-ის ობიექტი, და შეავსეთ array ამ წიგნებით. დაწერეთ function რომელიც მიიღებს ამ წიგნების array-ს და მიიღებს წელს. function-მა უნდა დაგვიბრუნოს ყველა წიგნი რომელიც გამოშვებულია ამ წლის შემდეგ. დავ-print-ოთ ეს წიგნები.
+
+struct Book {
+    var title: String
+    var author: String
+    var publicationYear: Int
+}
+
+var books: [Book] = [
+    Book(title: "A Tale of Two Cities", author: "Charles Dickens", publicationYear: 1859),
+    Book(title: "The Little Prince", author: "Antoine de Saint-Exupéry", publicationYear: 1943),
+    Book(title: "Harry Potter and the Philosopher's Stone", author: "J. K. Rowling", publicationYear: 1997)
+]
+
+func bookArray(books: [Book], year: Int) -> [Book] {
+    return books.filter { $0.publicationYear > year }
+}
+let filteringYear = 1900
+let filteredBooks = bookArray(books: books, year: filteringYear)
+
+for book in filteredBooks {
+    print("Title: \(book.title), Author: \(book.author), publicationYear: \(book.publicationYear)")
+}
+
+//4. შექმენით struct BankAccount, with properties როგორიცაა: holderName, accountNumber, balance. ამ ობიექტში დაამატეთ methods, დეპოზიტისა და გატანის (withdraw), დაწერეთ შესაბამისი ლოგიკა და ეცადეთ გაითვალისწინოთ სხვადასხვა ეჯ-ქეისები (edge case). მაგ. თანხის გატანისას თუ თანხა იმაზე ნაკლებია ვიდრე გვაქვს, თანხას ვერ გავიტანთ და ასე შემდეგ. print-ის მეშვეობით გამოვიტანოთ შესაბამისი შეცდომები . ამის შემდეგ შექმენით BankAccount ობიექტი და გააკეთეთ ტრანზაქციების იმიტაცია თქვენს მიერ დაწერილი მეთოდებით.
+
+struct BankAccount {
+    var holderName = "Lika Nozadze"
+    var accountNumber = "GE776757575"
+    var balance = 102.99
+    
+    mutating func deposit(amount: Double) {
+        if amount > 0 {
+            balance += amount
+            print("Deposited $\(amount). New balance: $\(balance)")
+        } else {
+            print("please try again with positive number")
+        }
+    }
+    
+    mutating func withdraw(amount: Double) {
+        if amount > 0 && amount <= balance {
+            balance -= amount
+            print("Withdrawn $\(amount). New balance: $\(balance)")
+        } else {
+            print("You are broke, you don't  have that kind of money")
+        }
+    }
+}
+
+var account = BankAccount()
+account.deposit(amount: 55.0)
+account.withdraw(amount: 200.0)
+
+
+//5. შექმენით enum-ი Genre მუსიკის ჟანრის ქეისებით. ამის შემდეგ შექმენით struct Song, with properties: title, artist, duration, genre, description (computied propertie უნდა იყოს description) და publisher (lazy propertie-ად შექმენით publisher). შემდეგ შექმენით თქვენი playlist array რომელსაც Song-ებით შეავსებთ (ზოგ song-ს ჰქონდეს publisher, ზოგს არა). შექმენით function რომელსაც გადააწვდით თქვენს playlist-ს და ჟანრს, function-ს დააბრუნებინეთ მხოლოდ იმ Song-ების array, რომელიც ამ ჟანრის იქნება და შემდეგ დაა-print-ინეთ ეს Song-ები.
+//
+//enum GenresOfMusic {
+//    case pop
+//    case soul
+//    case rock
+//    case country
+//}
+//
+//struct Song {
+//    var title: String
+//    var artist: String
+//    var duration: Double
+//    var genre: String
+//    lazy var publisher: String? = nil
+//    var description: String {
+//        return "title: \(title), artist: \(artist), duration: \(duration), genre: \(genre), publisher: \(publisher)"
+//    }
+//
+//    var playlist: [Song] = [
+//    Song(title: "Billie Jean", artist: "Michael Jackson", duration: 4.55, genre: "Pop"),
+//    Song(title: <#T##String#>, artist: <#T##String#>, duration: <#T##Double#>, genre: <#T##String#>)]
+
