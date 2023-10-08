@@ -433,3 +433,234 @@ account.withdraw(amount: 200.0)
 //    Song(title: "Billie Jean", artist: "Michael Jackson", duration: 4.55, genre: "Pop"),
 //    Song(title: <#T##String#>, artist: <#T##String#>, duration: <#T##Double#>, genre: <#T##String#>)]
 
+მეხუთე დავალება
+
+import Foundation
+//1-ი თასქი ბიბლიოთეკის სიმულაცია. (თავისი ქვეთასქებით).
+//1. შევქმნათ Class Book.Properties: bookID(უნიკალური იდენტიფიკატორი Int), String title, String author, Bool isBorrowed. Designated Init.Method რომელიც ნიშნავს წიგნს როგორც borrowed-ს. Method რომელიც ნიშნავს წიგნს როგორც დაბრუნებულს.
+class Book {
+    let bookID: Int
+    let title: String
+    let author: String
+    var isBorrowed: Bool
+    
+    init(bookID: Int, title: String, author: String, isBorrowed: Bool = false) {
+        self.bookID = bookID
+        self.title = title
+        self.author = author
+        self.isBorrowed = isBorrowed
+    }
+    func borrowed() {
+        isBorrowed = true
+        print("\(title) by \(author) is borrowed.")
+    }
+    func returned() {
+        isBorrowed = false
+        print("\(title) by \(author) is returned.")
+    }
+}
+var myBook = Book(bookID: 1, title: "მე, ბებია, ილიკო და ილარიონი", author: "ნოდარ დუმბაძე", isBorrowed: true)
+myBook.borrowed()
+myBook.returned()
+
+//2. შევქმნათ Class Owner Properties: ownerId(უნიკალური იდენტიფიკატორი Int), String name, Books Array სახელით borrowedBooks.Designated Init. Method რომელიც აძლევს უფლებას რომ აიღოს წიგნი ბიბლიოთეკიდან. Method რომელიც აძლევს უფლებას რომ დააბრუნოს წაღებული წიგნი.
+//class Owner {
+//    let ownerId: Int
+//    let name: String
+//    var borrowedBooks: [Book]
+//
+//    init(ownerId: Int, name: String, borrowedBooks: [Book] = []) {
+//        self.ownerId = ownerId
+//        self.name = name
+//        self.borrowedBooks = borrowedBooks
+//    }
+//    func borrowBook(book: Book) {
+//        book.borrowed()
+//        borrowedBooks.append(book)
+//        print("\(name) borrowed '\(book.title)' from the library.")
+//    }
+//    func returnBook(book: Book) {
+//        book.returned()
+//        print("\(name) returned '\(book.title)' to the library.")
+//    }
+//}
+//var newOwner = Owner(ownerId: 1, name: "Lika")
+//var book1 = Book(bookID: 1, title: "მე, ბებია, ილიკო და ილარიონი", author: "ნოდარ დუმბაძე", isBorrowed: true)
+//print(newOwner .borrowBook(book: book1))
+//print(newOwner .returnBook(book: book1))
+
+//3. შევქმნათ Class Library Properties: Books Array, Owners Array. Designated Init. Method წიგნის დამატება, რათა ჩვენი ბიბლიოთეკა შევავსოთ წიგნებით. Method რომელიც ბიბლიოთეკაში ამატებს Owner-ს. Method რომელიც პოულობს და აბრუნებს ყველა ხელმისაწვდომ წიგნს. Method რომელიც პოულობს და აბრუნებს ყველა წაღებულ წიგნს. Method რომელიც ეძებს Owner-ს თავისი აიდით თუ ეგეთი არსებობს. Method რომელიც ეძებს წაღებულ წიგნებს კონკრეტული Owner-ის მიერ. Method რომელიც აძლევს უფლებას Owner-ს წააღებინოს წიგნი თუ ის თავისუფალია.
+
+class Library {
+    var books: [String]
+    var owners: [String]
+    var booksID: Int
+    var ownerID: Int
+    var isBookBorrowed: Bool
+    
+    init(books: [String], owners: [String], booksID: Int, ownerID: Int, isBookBorrowed: Bool) {
+        self.books = books
+        self.owners = owners
+        self.booksID = booksID
+        self.ownerID = ownerID
+        self.isBookBorrowed = isBookBorrowed // Use the provided parameter value
+    }
+    //Method წიგნის დამატება, რათა ჩვენი ბიბლიოთეკა შევავსოთ წიგნებით.
+    func addBook(book: String) {
+        self.books.append(book)
+    }
+    
+    //Method რომელიც ბიბლიოთეკაში ამატებს Owner-ს.
+    func addOwner(owner: String) {
+        self.owners.append(owner)
+        
+    }
+//Method რომელიც პოულობს და აბრუნებს ყველა ხელმისაწვდომ წიგნს.
+
+    func findAvailableBooks() -> [String] {
+        return self.books.filter {_ in !self.isBookBorrowed }
+            }
+    
+//Method რომელიც პოულობს და აბრუნებს ყველა წაღებულ წიგნს.
+    func findTakenBooks() -> [String] {
+        return self.books.filter { _ in self.isBookBorrowed }
+       }
+//Method რომელიც ეძებს Owner-ს თავისი აიდით თუ ეგეთი არსებობს
+    
+    func findOwnerID(ownerIDToFind: Int) -> String? {
+        for (index, id) in self.owners.enumerated() {
+            if Int(id) == ownerIDToFind {
+                return self.owners[index]
+            }
+        }
+        return nil
+    }
+//Method რომელიც ეძებს წაღებულ წიგნებს კონკრეტული Owner-ის მიერ.
+    func findBooksByOwner(ownerToFind: String) -> [String] {
+        var booksByOwner: [String] = []
+        for (index, owner) in self.owners.enumerated() {
+            if owner == ownerToFind && self.isBookBorrowed {
+                booksByOwner.append(self.books[index])
+            }
+        }
+        return booksByOwner
+    }
+    
+    }
+
+var myLibrary = Library(books: [], owners: [], booksID: 01, ownerID: 11, isBookBorrowed: true)
+
+var myLibrary1 = Library(books: ["დედა ენა"], owners: ["ეკა"], booksID: 01, ownerID: 11, isBookBorrowed: true)
+var myLibrary2 = Library(books: ["ჯინსების თაობა"], owners: ["მამუკა"], booksID: 02, ownerID: 12, isBookBorrowed: false)
+var myLibrary3 = Library(books: ["ვეფხისტყაოსანი"], owners: ["შმაგი"], booksID: 03, ownerID: 13, isBookBorrowed: false)
+
+
+//აქ დავპრინტე წიგნები და მფლობელები
+print("Books in the libraries: \(myLibrary1.books + myLibrary2.books + myLibrary3.books)")
+print("Owners of the library: \(myLibrary1.owners + myLibrary2.owners + myLibrary3.owners)")
+
+//ყველა ხელმისაწვდომი წიგნი დაიპრინტება აააქ
+    let availableBooksFromLibraries = myLibrary1.findAvailableBooks() + myLibrary2.findAvailableBooks() + myLibrary3.findAvailableBooks()
+
+    if availableBooksFromLibraries.isEmpty {
+        print("No book is available.")
+    } else {
+        print("Available books: \(availableBooksFromLibraries)")
+    }
+//წაღებული წიგნები დაიპრინტება აააააქ
+
+let takenBooksFromLibraries = myLibrary1.findTakenBooks() + myLibrary2.findTakenBooks() + myLibrary3.findTakenBooks()
+
+if takenBooksFromLibraries.isEmpty {
+    print("No book is taken.")
+} else {
+    print("Taken books: \(takenBooksFromLibraries)")
+}
+
+//აქ დაიბედებაა Owner-ს თავისი აიდით თუ ეგეთი არსებობს საერთოოდ
+let ownerIDToFind = 15
+if let foundOwner = myLibrary2.findOwnerID(ownerIDToFind: ownerIDToFind) {
+    print("Owner found: \(foundOwner)")
+} else {
+    print("Owner not found.")
+}
+// წაღებული წიგნი კონკრეტული Owner-ის მიერ.
+let ownerToFind = "ეკა" // Replace with the desired owner's name
+let booksByOwner = myLibrary1.findBooksByOwner(ownerToFind: ownerToFind) + myLibrary2.findBooksByOwner(ownerToFind: ownerToFind) + myLibrary3.findBooksByOwner(ownerToFind: ownerToFind)
+
+if booksByOwner.isEmpty {
+    print("No books found for owner \(ownerToFind).")
+} else {
+    print("Books borrowed by \(ownerToFind): \(booksByOwner)")
+}
+
+//4. გავაკეთოთ ბიბლიოთეკის სიმულაცია. შევქმნათ რამოდენიმე წიგნი და რამოდენიმე Owner-ი, შევქმნათ ბიბლიოთეკა.
+
+//class Book {
+//
+//    let title: String
+//    let bookID: Int
+//    let author: String
+//    var isBorrowed: Bool
+//
+//    init(title: String, bookID: Int, author: String, isBorrowed:Bool) {
+//        self.title = title
+//        self.bookID = bookID
+//        self.author = author
+//        self.isBorrowed = false
+//    }
+//}
+//    class Owner {
+//        let name: String
+//
+//        init(name: String) {
+//            self.name = name
+//    }
+//}
+//class library {
+//    var books: [Book]
+//    var owners: [Owner]
+//
+//    init() {
+//        self.books = []
+//        self.owners = []
+//    }
+//
+//    func addBook(_ book: Book) {
+//        book.append(book)
+//    }
+//
+//    func addOwner(_ owner: Owner) {
+//        owner.append(owner)
+//    }
+//}
+//
+//let book1 = Book(bookID: 01, title: "პადინგტონი", author: "მაიკლ ბონდი", isBorrowed: true)
+//let book2 = Book(bookID: 02, title: "პეპი", author: "ᲐᲡᲢᲠᲘᲓ ᲚᲘᲜᲓᲒᲠᲔᲜᲘ", isBorrowed: false)
+//let book3 = Book(bookID: 03, title: "ნარცისი და გოლდმუნდი", author: "ჰერმან ჰესე", isBorrowed: true)
+//
+//    let owner1 = Owner(name: "ნანა")
+//    let owner2 = Owner(name: "ვასო")
+//    let owner3 = Owner(name: "სანდრო")
+//
+//let library = library()
+//
+//library.addBook(book1)
+//library.addBook(book2)
+//library.addBook(book3)
+//
+//
+//library.addOwner(owner1)
+//library.addOwner(owner2)
+//library.addOwner(owner3)
+//
+//print("Books in the library:")
+//for book in library.books {
+//    print("Title: \(book.title), Author: \(book.author), Borrowed: \(book.isBorrowed)")
+//}
+//
+//// Print owners
+//print("\nOwners in the library:")
+//for owner in Library.owners {
+//    print("Name: \(owner.name)")
+//}
