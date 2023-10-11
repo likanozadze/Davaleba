@@ -664,3 +664,689 @@ if booksByOwner.isEmpty {
 //for owner in Library.owners {
 //    print("Name: \(owner.name)")
 //}
+/////////////////
+//მეხუთე დავალება (ახალი ვერსია)
+import Foundation
+//1-ი თასქი ბიბლიოთეკის სიმულაცია. (თავისი ქვეთასქებით).
+//1. შევქმნათ Class Book.Properties: bookID(უნიკალური იდენტიფიკატორი Int), String title, String author, Bool isBorrowed. Designated Init.Method რომელიც ნიშნავს წიგნს როგორც borrowed-ს. Method რომელიც ნიშნავს წიგნს როგორც დაბრუნებულს.
+//class Book {
+//    let bookID: Int
+//    let title: String
+//    let author: String
+//    var isBorrowed: Bool
+//
+//    init(bookID: Int, title: String, author: String, isBorrowed: Bool = false) {
+//        self.bookID = bookID
+//        self.title = title
+//        self.author = author
+//        self.isBorrowed = isBorrowed
+//    }
+//    func borrowed() {
+//        isBorrowed = true
+//        print("\(title) by \(author) is borrowed.")
+//    }
+//    func returned() {
+//        isBorrowed = false
+//        print("\(title) by \(author) is returned.")
+//    }
+//}
+//var myBook = Book(bookID: 1, title: "მე, ბებია, ილიკო და ილარიონი", author: "ნოდარ დუმბაძე", isBorrowed: true)
+//myBook.borrowed()
+//myBook.returned()
+//
+//2. შევქმნათ Class Owner Properties: ownerId(უნიკალური იდენტიფიკატორი Int), String name, Books Array სახელით borrowedBooks.Designated Init. Method რომელიც აძლევს უფლებას რომ აიღოს წიგნი ბიბლიოთეკიდან. Method რომელიც აძლევს უფლებას რომ დააბრუნოს წაღებული წიგნი.
+//class Owner {
+//    let ownerId: Int
+//    let name: String
+//    var borrowedBooks: [Book]
+//
+//    init(ownerId: Int, name: String, borrowedBooks: [Book] = []) {
+//        self.ownerId = ownerId
+//        self.name = name
+//        self.borrowedBooks = borrowedBooks
+//    }
+//    func borrowBook(book: Book) {
+//        book.borrowed()
+//        borrowedBooks.append(book)
+//        print("\(name) borrowed '\(book.title)' from the library.")
+//    }
+//    func returnBook(book: Book) {
+//        book.returned()
+//        print("\(name) returned '\(book.title)' to the library.")
+//    }
+//}
+//var newOwner = Owner(ownerId: 1, name: "Lika")
+//var book1 = Book(bookID: 1, title: "მე, ბებია, ილიკო და ილარიონი", author: "ნოდარ დუმბაძე", isBorrowed: true)
+//print(newOwner .borrowBook(book: book1))
+//print(newOwner .returnBook(book: book1))
+//
+
+
+//3. შევქმნათ Class Library Properties: Books Array, Owners Array. Designated Init. Method წიგნის დამატება, რათა ჩვენი ბიბლიოთეკა შევავსოთ წიგნებით. Method რომელიც ბიბლიოთეკაში ამატებს Owner-ს. Method რომელიც პოულობს და აბრუნებს ყველა ხელმისაწვდომ წიგნს. Method რომელიც პოულობს და აბრუნებს ყველა წაღებულ წიგნს. Method რომელიც ეძებს Owner-ს თავისი აიდით თუ ეგეთი არსებობს. Method რომელიც ეძებს წაღებულ წიგნებს კონკრეტული Owner-ის მიერ. Method რომელიც აძლევს უფლებას Owner-ს წააღებინოს წიგნი თუ ის თავისუფალია.
+class Book {
+    var title: String
+    let bookID: Int
+    let author: String
+    var isBorrowed: Bool
+    
+    init(title: String, bookID: Int, author: String, isBorrowed: Bool) {
+        self.title = title
+        self.bookID = bookID
+        self.author = author
+        self.isBorrowed = isBorrowed
+    }
+}
+class Owner {
+    var name: String
+    let patronID: Int
+    var ownedBooks: [Book]
+    init(name: String,patronID: Int, ownedBooks: [Book]) {
+        self.name = name
+        self.patronID = patronID
+        self.ownedBooks = ownedBooks
+    }
+}
+    
+class Library {
+    var books: [Book]
+    var owners: [Owner]
+    
+    init(books: [Book], owners: [Owner]) {
+        self.books = books
+        self.owners = owners
+        
+    }
+    //Method წიგნის დამატება, რათა ჩვენი ბიბლიოთეკა შევავსოთ წიგნებით.
+    func addBook(_ book: Book) {
+        books.append(book)
+    }
+    func printLibrary() {
+        for book in books {
+            print("Title: \(book.title)")
+            print("Book ID: \(book.bookID)")
+            print("Author: \(book.author)")
+            print("Borrowed: \(book.isBorrowed ? "კი" : "არა")")
+            
+        }
+    }
+    //Method რომელიც ბიბლიოთეკაში ამატებს Owner-ს.
+    func addOwner(name: String, patronID: Int) {
+        let newOwner = Owner(name: name, patronID: patronID, ownedBooks: [])
+        owners.append(newOwner)
+    }
+    func printOwners() {
+        for owner in owners {
+            print("Owner Name: \(owner.name)")
+            print("Patron ID: \(owner.patronID)")
+        }
+    }
+//Method რომელიც პოულობს და აბრუნებს ყველა ხელმისაწვდომ წიგნს.
+    func findAvailableBooks() -> [Book] {
+        var availableBooks: [Book] = []
+        
+        for book in books {
+            if !book.isBorrowed {
+                availableBooks.append(book)
+            }
+        }
+        
+        return availableBooks
+    }
+    func printAvailableBooks() {
+        let availableBooks = findAvailableBooks()
+        
+        if availableBooks.isEmpty {
+            print("No available books.")
+        } else {
+            print("Available Books:")
+            for book in availableBooks {
+                print("Title: \(book.title)")
+                print("Book ID: \(book.bookID)")
+                print("Author: \(book.author)")
+                print("Borrowed: No")
+                print()
+            }
+        }
+    }
+//Method რომელიც პოულობს და აბრუნებს ყველა წაღებულ წიგნს
+    func makeBooksAvailable() {
+        for index in books.indices {
+            if books[index].isBorrowed {
+                books[index].isBorrowed = false
+            }
+        }
+    }
+//Method რომელიც ეძებს Owner-ს თავისი აიდით თუ ეგეთი არსებობს.
+    func findOwner(byPatronID patronID: Int) -> Owner? {
+        for owner in owners {
+            if owner.patronID == patronID {
+                return owner
+            }
+        }
+        return nil
+    }
+//Method რომელიც ეძებს წაღებულ წიგნებს კონკრეტული Owner-ის მიერ.
+    func findBooksOwned(byOwner owner: Owner) -> [Book] {
+        var ownedBooks: [Book] = []
+
+        for book in owner.ownedBooks {
+            if let index = books.firstIndex(where: { $0.bookID == book.bookID }) {
+                ownedBooks.append(books[index])
+            }
+        }
+
+        return ownedBooks
+    }
+}
+
+    let library = Library(books: [], owners: [])
+    let newBook = Book(title: "დედა ენა", bookID: 1, author: "იაკობ გოგებაშვილი", isBorrowed: false)
+    let newBook1 = Book(title: "ჯინსების თაობა", bookID: 2, author: "დათო ტურაშვილი", isBorrowed: false)
+    let newBook2 = Book(title: "ვეფხისტყაოსანი", bookID: 3, author: "შოთა რუსთაველი", isBorrowed: true)
+
+    library.addBook(newBook)
+    library.addBook(newBook1)
+    library.addBook(newBook2)
+
+library.addOwner(name: "მამუკა", patronID: 4)
+library.addOwner(name: "ეკა", patronID: 5)
+library.addOwner(name: "ლიკა", patronID: 6)
+
+library.printLibrary()
+library.printOwners()
+library.printAvailableBooks()
+library.makeBooksAvailable()
+library.printLibrary()
+
+if let owner = library.findOwner(byPatronID: 4) {
+    print("Owner Name: \(owner.name)")
+    print("Patron ID: \(owner.patronID)")
+} else {
+    print("Owner not found.")
+}
+if let owner = library.findOwner(byPatronID: 4) {
+    let ownerBooks = library.findBooksOwned(byOwner: owner)
+
+    if ownerBooks.isEmpty {
+        print("\(owner.name) არ აქვს წიგნები.")
+    } else {
+        print("\(owner.name)'წაღებული აქვს წიგნები:")
+        for book in ownerBooks {
+            print("Title: \(book.title)")
+            print("Book ID: \(book.bookID)")
+            print("Author: \(book.author)")
+            print("Borrowed: \(book.isBorrowed ? "კი" : "არა")")
+            print()
+        }
+    }
+} else {
+    print("Owner not found.")
+}
+
+
+//გავაკეთოთ ბიბლიოთეკის სიმულაცია. შევქმნათ რამოდენიმე წიგნი და რამოდენიმე Owner-ი, შევქმნათ ბიბლიოთეკა. დავამატოთ წიგნები და Owner-ები ბიბლიოთეკაში წავაღებინოთ Owner-ებს წიგნები და დავაბრუნებინოთ რაღაც ნაწილი. დავბეჭდოთ ინფორმაცია ბიბლიოთეკიდან წაღებულ წიგნებზე, ხელმისაწვდომ წიგნებზე და გამოვიტანოთ წაღებული წიგნები კონკრეტულად ერთი Owner-ის მიერ
+
+class Book {
+
+let title: String
+let author: String
+var isBorrowed: Bool
+var owner: String
+
+init(title: String, author: String, isBorrowed:Bool, owner: String) {
+    self.title = title
+    self.author = author
+    self.isBorrowed = isBorrowed
+    self.owner = owner
+}
+}
+
+class Owner {
+    let name: String
+
+    init(name: String) {
+        self.name = name
+}
+}
+
+
+let book1 = Book(title: "პადინგტონი", author: "მაიკლ ბონდი", isBorrowed: true, owner: "ნანა")
+let book2 = Book(title: "პეპი", author: "ᲐᲡᲢᲠᲘᲓ ᲚᲘᲜᲓᲒᲠᲔᲜᲘ", isBorrowed: true, owner: "ნანა")
+let book3 = Book(title: "ნარცისი და გოლდმუნდი", author: "ჰერმან ჰესე", isBorrowed: false, owner: "სანდრო")
+let book4 = Book(title: "ლალალა", author: "ჰიჰიჰი", isBorrowed: true, owner: "ვასო")
+
+let owner1 = Owner(name: "ნანა")
+let owner2 = Owner(name: "ვასო")
+let owner3 = Owner(name: "სანდრო")
+let owner4 = Owner(name: "კიკიკი")
+
+class Library {
+var books: [Book] = []
+var owners: [Owner] = []
+
+func addBook(_ book: Book) {
+    books.append(book)
+}
+
+func addOwner(_ owner: Owner) {
+    owners.append(owner)
+}
+}
+
+let library = Library()
+
+library.addBook(book1)
+library.addBook(book2)
+library.addBook(book3)
+library.addBook(book4)
+
+library.addOwner(owner1)
+library.addOwner(owner2)
+library.addOwner(owner3)
+library.addOwner(owner4)
+
+let allBooks = library.books
+let allOwners = library.owners
+
+print("ყველა წიგნი ბიბლიოთეკაში:")
+for book in allBooks {
+print("Title: \(book.title)")
+print("Author: \(book.author)")
+print()
+}
+print("All Owners ბიბლიოთეკაში:")
+for owner in allOwners {
+print("Owner Name: \(owner.name)")
+}
+
+print("ბიბლიოთეკიდან გატანილი წიგნები:")
+for book in library.books {
+if book.isBorrowed {
+    print("Title: \(book.title)")
+    print("Author: \(book.author)")
+    print()
+}
+}
+print("ბიბლიოთეკაში ხელმისაწვდომია:")
+for book in library.books {
+if !book.isBorrowed {
+    print("Title: \(book.title)")
+    print("Author: \(book.author)")
+    print()
+}
+}
+let ownerThatBorrowedMaxBooks = "ნანა"
+
+print("Books taken by \(ownerThatBorrowedMaxBooks):")
+for book in library.books {
+if book.owner == ownerThatBorrowedMaxBooks {
+    print("Title: \(book.title)")
+    print("Author: \(book.author)")
+    print()
+}
+}
+
+//===========================================================
+//2 თასქი ავაწყოთ პატარა E-commerce სისტემა. (თავისი ქვეთასქებით).
+//1. შევქმნათ Class Product, შევქმნათ შემდეგი properties productID (უნიკალური იდენტიფიკატორი Int), String name, Double price. შევქმნათ Designated Init.
+class Product {
+    var productID: Int
+    var name: String
+    var price: Double
+    
+    init(productID: Int, name: String, price: Double) {
+        self.productID = productID
+        self.name = name
+        self.price = price
+    }
+}
+//2. შევქმნათ Class Cart Properties: cartID(უნიკალური იდენტიფიკატორი Int), Product-ების Array სახელად items. შევქმნათ Designated Init.
+class Cart {
+    var cartID: Int
+    var productItems: [Product]
+    
+    init(cartID: Int, productItems: [Product] = []) {
+        self.cartID = cartID
+        self.productItems = productItems
+    }
+    func addProduct(product: Product) {
+        productItems.append(product)
+    }
+    func removeProduct(productID: Int) {
+         productItems.removeAll { $0.productID == productID }
+     }
+    func totalPrice() -> Double {
+          var total: Double = 0.0
+          for product in productItems {
+              total += product.price
+          }
+          return total
+      }
+}
+
+let product1 = Product(productID: 1, name: "marwyvi", price: 1.99)
+let product2 = Product(productID: 2, name: "kokakola", price: 1.85)
+let product3 = Product(productID: 3, name: "vashli", price: 3.74)
+let product4 = Product(productID: 4, name: "sazamtro", price: 11.23)
+
+
+var myCart = Cart(cartID: 11)
+
+myCart.addProduct(product: product1)
+myCart.addProduct(product: product2)
+myCart.addProduct(product: product3)
+myCart.addProduct(product: product4)
+
+
+for product in myCart.productItems {
+    print("Product ID: \(product.productID)")
+    print("Name: \(product.name)")
+    print("Price: \(product.price)")
+}
+
+myCart.removeProduct(productID: 1)
+
+print("წაშალე და განაახლე:")
+
+for product in myCart.productItems {
+    print("Product ID: \(product.productID)")
+    print("Name: \(product.name)")
+    print("Price: \(product.price)")
+}
+
+let totalPrice = myCart.totalPrice()
+print("Total Price: \(totalPrice)")
+
+//3. შევქმნათ Class User Properties: userID(უნიკალური იდენტიფიკატორი Int), String username, Cart cart.
+//Designated Init.
+
+class User {
+    var userID: Int
+    var username: String
+    var cart: Cart
+    
+    init(userID: Int, username: String, cart: Cart) {
+        self.userID = userID
+        self.username = username
+        self.cart = cart
+    }
+    //Method რომელიც კალათაში ამატებს პროდუქტს.
+    func addProductToCart(product: Product) {
+        cart.addProduct(product: product)
+    }
+    //Method რომელიც კალათიდან უშლის პროდუქტს.
+    func removeProductFromCart(product:Product) {
+        cart.removeProduct(productID: <#T##Int#>)
+    }
+}
+let user = User(userID: 1, username: "liki", cart: Cart(cartID: 1))
+user.addProductToCart(product: Product(productID: 123, name: "banani", price: 1.22))
+
+
+
+//Method რომელიც checkout (გადახდის)  იმიტაციას გააკეთებს დაგვითვლის თანხას და გაასუფთავებს ჩვენს shopping cart-ს.
+
+//4. გავაკეთოთ იმიტაცია და ვამუშაოთ ჩვენი ობიექტები ერთად.
+//შევქმნათ რამოდენიმე პროდუქტი.
+//შევქმნათ 2 user-ი, თავისი კალათებით,
+//დავუმატოთ ამ იუზერებს კალათებში სხვადასხვა პროდუქტები,
+//დავბეჭდოთ price ყველა item-ის ამ იუზერების კალათიდან.
+//და ბოლოს გავაკეთოთ სიმულაცია ჩექაუთის, დავაბეჭდინოთ იუზერების გადასხდელი თანხა და გავუსუფთაოთ კალათები.
+
+// შევქმნათ რამოდენიმე პროდუქტი.
+class myProduct {
+    let name: String
+    let price: Double
+    
+    init(name: String, price: Double) {
+        self.name = name
+        self.price = price
+    }
+}
+
+// useri
+class defaultUser {
+    var name: String
+    var cart: [myProduct]
+    
+    init(name: String) {
+        self.name = name
+        self.cart = []
+    }
+}
+
+func calculateTotalPrice(cart: [Product]) -> Double {
+    var totalPrice = 0.0
+    for product in cart {
+        totalPrice += product.price
+    }
+    return totalPrice
+    
+    // ori momxmarebeli
+    var newUser1 = defaultUser(name: "User1")
+    var newUser2 = defaultUser(name: "User2")
+    
+    
+    // produktebi
+    var myProduct1 = myProduct(name: "saponi", price: 2.22)
+    var myProduct2 = myProduct(name: "kata", price: 3.22)
+    var myProduct3 = myProduct(name: "yveli", price: 8.08)
+    
+    //დავუმატოთ ამ იუზერებს კალათებში სხვადასხვა პროდუქტები,
+    newUser1.cart += [myProduct1, myProduct2, myProduct3]
+    newUser2.cart += [myProduct1, myProduct3]
+    
+}
+////მეექვსე დავალება
+//1. შევქმნათ Class-ი SuperEnemy with properties: String name, Int hitPoints (ანუ სიცოცხლის რაოდენობა).სურვილისამებრ დაამატებ properties რომელიც მას აღწერს.
+class SuperEnemy {
+    var name: String
+    var hitPoints: Int
+    
+    
+    init(name: String, hitPoints: Int) {
+        self.name = name
+        self.hitPoints = hitPoints
+    }
+}
+
+//2. შევქმნათ Superhero Protocol-ი.
+//შემდეგი get only properties: String name, String alias, Bool isEvil და დიქშენარი (dictionary) superPowers [String: Int], სადაც String-ი არის სახელი და Int არის დაზიანება (damage).
+
+protocol Superhero {
+    var name: String {get}
+    var alias: String {get}
+    var isEvil: Bool {get}
+    var superPowers: [String: Int] {get}
+}
+    
+
+class MySuperhero: Superhero {
+    var name: String
+    var alias: String
+    var isEvil: Bool
+    var superPowers: [String: Int]
+    
+    init(name: String, alias: String, isEvil: Bool, superPowers: [String: Int]) {
+        self.name = name
+        self.alias = alias
+        self.isEvil = isEvil
+        self.superPowers = superPowers
+    }
+    
+
+//Method attack, რომელიც მიიღებს target SuperEnemy-ის და დააბრუნებს (return) Int-ს ანუ დარჩენილ სიცოცხლე.
+    func attack(target: SuperEnemy) -> Int {
+           let totalDamage = superPowers.values.reduce(0, +)
+           target.hitPoints -= totalDamage
+           if target.hitPoints < 0 {
+               target.hitPoints = 0
+           }
+           return target.hitPoints
+       }
+//Method performSuperPower, რომელიც მიიღებს SuperEnemy-ის და დააბრუნებს (return) Int-ს, აქაც დარჩენილ სიცოცხლე.
+    func performSuperPower(on enemy: SuperEnemy) -> Int {
+        var remainingLife = enemy.hitPoints
+        for (_, damage) in superPowers {
+            remainingLife -= damage
+        }
+        remainingLife = max(0, remainingLife)
+        return remainingLife
+    }
+   }
+    
+let enemy1 = SuperEnemy(name: "ურსულა", hitPoints: 100)
+let hero1 = MySuperhero(name: "კომბლე", alias: "კომბლიტო", isEvil: false, superPowers: ["size-changing": 40, "xinkals chams kuchebit": 99])
+
+let remainingHitPoints1 = hero1.attack(target: enemy1)
+print("ურსულას რემეინინგ ფოინთები: \(remainingHitPoints1)")
+
+
+let enemy2 = SuperEnemy(name: "ბიძო", hitPoints: 1000)
+let hero2 = MySuperhero(name: "წიქარა", alias: "წიქო", isEvil: false, superPowers: ["speed": 60])
+
+let leftHitPoints2 = hero2.attack(target: enemy2)
+print("ბიძოს რემეინინგ ფოინთები: \(leftHitPoints2)")
+
+
+//3. Superhero-ს extension-ი გავაკეთოთ სადაც შევქმნით method-ს რომელიც დაგვი-print-ავს ინფორმაციას სუპერ გმირზე და მის დარჩენილ superPower-ებზე.
+//
+extension Superhero {
+    func SuperHeroInfo() {
+        print("Superhero Info:")
+        print("Name: \(name)")
+        print("Alias: \(alias)")
+        print("Is Evil: \(isEvil ? "Yes" : "No")")
+        print("Superpowers:")
+        for (power, damage) in superPowers {
+            print("\(power): Damage \(damage)")
+        }
+    }
+    func printRemainingSuperpowers() {
+        print("Remaining Superpowers:")
+        for (power, damage) in superPowers {
+            print("\(power): Remaining Damage \(damage)")
+        }
+    }
+}
+hero1.SuperHeroInfo()
+hero1.printRemainingSuperpowers()
+hero2.SuperHeroInfo()
+hero2.printRemainingSuperpowers()
+
+
+//4. შევქმნათ რამოდენიმე სუპერგმირი Struct-ი რომელიც ჩვენს Superhero protocol-ს დააიმპლემენტირებს მაგ:struct SpiderMan: Superhero და ავღწეროთ protocol-ში არსებული ცვლადები და მეთოდები.
+struct kombleMan: Superhero {
+    var name: String
+    var alias: String
+    var isEvil: Bool
+    var superPowers: [String: Int]
+    
+    func attack(target: SuperEnemy) -> Int {
+        let totalDamage = superPowers.values.reduce(0, +)
+        target.hitPoints -= totalDamage
+        if target.hitPoints < 0 {
+            target.hitPoints = 0
+        }
+        let randomDamage = Int.random(in: 20...40)
+        print("Random Damage for KombleMan: \(randomDamage)")
+        target.hitPoints -= randomDamage
+        
+        if target.hitPoints < 0 {
+            target.hitPoints = 0
+        }
+        return target.hitPoints
+    }
+}
+
+struct LizaDog: Superhero {
+    var name: String
+    var alias: String
+    var isEvil: Bool
+    var superPowers: [String: Int]
+    
+    func attack(target: SuperEnemy) -> Int {
+        let totalDamage = superPowers.values.reduce(0, +)
+        target.hitPoints -= totalDamage
+        if target.hitPoints < 0 {
+            target.hitPoints = 0
+        }
+        let randomDamage = Int.random(in: 20...40)
+        print("Random Damage for LizaDog: \(randomDamage)")
+        target.hitPoints -= randomDamage
+        
+        if target.hitPoints < 0 {
+            target.hitPoints = 0
+        }
+        return target.hitPoints
+    }
+}
+//attack მეთოდში -> 20-იდან 40-ამდე დავაგენერიროთ Int-ის რიცხვი და ეს დაგენერებული damage დავაკლოთ SuperEnemy-ს სიცოცხლეს და დარჩენილი სიცოცხლე დავაბრუნოთ( return).
+
+let kombleManInstance = kombleMan(name: "KombleMan", alias: "Komble", isEvil: false, superPowers: ["Strength": 10, "Speed": 5])
+let lizaDogInstance = LizaDog(name: "LizaDog", alias: "GoodDog", isEvil: false, superPowers: ["Strength": 20, "Speed": 30])
+var enemy = SuperEnemy(name: "ურსულა", hitPoints: 100)
+
+let updatedHitPointsForKombleMan = kombleManInstance.attack(target: enemy)
+print("Updated Hit Points for KombleMan: \(updatedHitPointsForKombleMan)")
+
+let updatedHitPointsForLizaDog = lizaDogInstance.attack(target: enemy)
+print("Updated Hit Points for LizaDog: \(updatedHitPointsForLizaDog)")
+
+
+//performSuperPower-ს შემთხვევაში -> დიქშენერიდან ერთ superPower-ს ვიღებთ და ვაკლებთ enemy-ს (სიცოცხლეს ვაკლებთ). ვშლით ამ დიქშენერიდან გამოყენებულ superPower-ს. გამოყენებული superPower-ი უნდა იყოს დარანდომებული. დარჩენილ enemy-ს სიცოცხლეს ვაბრუნებთ (return).
+
+//ეს ვერ გავაკეთე
+
+//5. შევქმნათ class SuperherSquad,
+//რომელიც ჯენერიკ Superhero-s მიიღებს. მაგ: class SuperheroSquad<T: Superhero>.
+
+class SuperheroSquad<T: Superhero> {
+    var superheroes: [T]
+    
+    init(superheroes: [T]) {
+        self.superheroes = superheroes
+    }
+    func listSuperHeroes() {
+        for superhero in superheroes {
+            print("Name: \(superhero.name), alias: \(superhero.alias), isEvil: \(superhero.isEvil), superPowers: \(superhero.superPowers)")
+        }
+    }
+}
+
+let kombleMan1 = MySuperhero(name: "KombleMan", alias: "Komble", isEvil: false, superPowers: ["Strength": 100, "Speed": 500])
+let lizaDog2 = MySuperhero(name: "lizaDog", alias: "GoodDog", isEvil: false, superPowers: ["Strength": 202, "Speed": 303])
+
+
+let superheroes: [MySuperhero] = [kombleMan1, lizaDog2]
+let superheroSquad = SuperheroSquad(superheroes: superheroes)
+superheroSquad.listSuperHeroes()
+
+
+
+//6.ამ ყველაფრის მერე მოვაწყოთ ერთი ბრძოლა. 🤺🤜🏻🤛🏻
+//შევქმნათ method simulateShowdown. ეს method იღებს სუპერგმირების სქვადს და იღებს SuperEnemy-ს.
+
+func simulateShowdown<T: Superhero>(squad: SuperheroSquad<T>, enemy: SuperEnemy) {
+    print("gaanadgure \(enemy.name)!")
+    for superhero in squad.superheroes {
+        let damage = superhero.superPowers.values.reduce(0, +)
+        enemy.hitPoints -= damage
+        if enemy.hitPoints < 0 {
+            enemy.hitPoints = 0
+        }
+        print("\(superhero.name) attacks \(enemy.name) and deals \(damage) damage.")
+        print("\(enemy.name) now has \(enemy.hitPoints) hit points left.")
+    }
+    if enemy.hitPoints == 0 {
+        print("\(enemy.name) has been defeated by the superhero squad!")
+    } else {
+        print("\(enemy.name) survives the showdown with \(enemy.hitPoints) hit points remaining.")
+    }
+}
+
+let superheroes = [kombleMan1, lizaDog2]
+let enemy = SuperEnemy(name: "ბიძო", hitPoints: 1000)
+simulateShowdown(squad: superheroSquad, enemy: enemy)
+
+
