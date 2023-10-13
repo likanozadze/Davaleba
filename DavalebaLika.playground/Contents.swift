@@ -1349,4 +1349,221 @@ let superheroes = [kombleMan1, lizaDog2]
 let enemy = SuperEnemy(name: "ბიძო", hitPoints: 1000)
 simulateShowdown(squad: superheroSquad, enemy: enemy)
 
+// meate davaleba
+//1-ControlCenter-ი.
+//With properties: isLockedDown: Bool და securityCode: String, რომელშიც იქნება რაღაც პაროლი შენახული.
+//Method lockdown, რომელიც მიიღებს პაროლს, ჩვენ დავადარებთ ამ პაროლს securityCode-ს და თუ დაემთხვა გავაკეთებთ lockdown-ს.
+//Method-ი რომელიც დაგვიბეჭდავს ინფორმაციას lockdown-ის ქვეშ ხომ არაა ჩვენი ControlCenter-ი.
+
+class StationModule {
+    var moduleName: String
+    var drone: Drone?
+
+    init(moduleName: String, drone: Drone? = nil) {
+        self.moduleName = moduleName
+        self.drone = drone
+    }
+
+    func giveTaskToDrone(task: String) {
+
+        if let drone = drone {
+            print("შეასრულე თასქი: \(task)")
+        } else {
+            print("დრონი არ არის ხელმისაწვდომი")
+        }
+    }
+}
+
+class ControlCenter: StationModule {
+    var isLockedDown: Bool
+    let securityCode: String
+    
+    init(moduleName: String, drone: Drone?, isLockedDown: Bool, securityCode: String) {
+        self.isLockedDown = isLockedDown
+        self.securityCode = securityCode
+        super.init(moduleName: moduleName, drone: drone)
+    }
+    func lockdown(password: String) {
+        if password == securityCode {
+            isLockedDown = true
+            print("ControlCenter ლოქდაუნშია")
+        } else {
+            print("არასწორი პაროლი")
+        }
+    }
+    func printStatus() {
+        if isLockedDown {
+            print("არასწორი პაროლი")
+        } else {
+            print("ControlCenter ლოქდაუნშია")
+        }
+    }
+}
+
+//2-ResearchLab-ი.
+//With properties: String Array - ნიმუშების შესანახად.
+//Method რომელიც მოიპოვებს(დაამატებს) ნიმუშებს ჩვენს Array-ში.
+
+class ResearchLab: StationModule {
+    var sampleArray: [String]
+
+    init(moduleName: String, drone: Drone?, sampleArray: [String]) {
+        self.sampleArray = sampleArray
+        super.init(moduleName: moduleName, drone: drone)
+    }
+    func addSamples(sample: String) {
+        sampleArray.append(sample)
+        print("\(moduleName) დაამატე ნიმუშუ: \(sample)")
+    }
+}
+
+//3-LifeSupportSystem-ა.With properties: oxygenLevel: Int, რომელიც გააკონტროლებს ჟანგბადის დონეს.Method რომელიც გვეტყვის ჟანგბადის სტატუსზე.
+
+class LifeSupportSystem: StationModule {
+    var oxygenLevel: Int
+    
+    init(moduleName: String, drone: Drone?, oxygenLevel:Int) {
+        self.oxygenLevel = oxygenLevel
+        super.init(moduleName: moduleName, drone: drone)
+    }
+    
+    func oxygenLevelStatus() -> String {
+        if oxygenLevel > 0 {
+            return "სისტემაში ჟანგბადის დონე მაღალია"
+        } else {
+            return "სისტემაში ჟანგბადის დონე არაა"
+        }
+    }
+}
+
+//4-StationModule-ი
+//With properties: moduleName: String და drone: Drone? (optional).Method რომელიც დრონს მისცემს თასქს.
+//ეს გავაკეთე ზევით
+
+//5-ჩვენი ControlCenter-ი ResearchLab-ი და LifeSupportSystem-ა გავხადოთ StationModule-ის subClass.
+//ესეც გავაკეთე, სადაც ამ სამის კლასები მაქვს გაწერილი
+
+//6-Drone.
+//With properties: task: String? (optional), unowned var assignedModule: StationModule, weak var missionControlLink: MissionControl? (optional). //Method რომელიც შეამოწმებს აქვს თუ არა დრონს თასქი და თუ აქვს დაგვიბჭდავს რა სამუშაოს ასრულებს ის.
+
+class Drone {
+    var task: String?
+    unowned var assignedModule: StationModule
+    weak var missionControlLink: MissionControl?
+    
+    init(task: String? = nil, assignedModule: StationModule, missionControlLink: MissionControl? = nil) {
+        self.task = task
+        self.assignedModule = assignedModule
+        self.missionControlLink = missionControlLink
+    }
+    func checkDroneStatus() {
+        if let task = task {
+            print("დრონს შესასრულებლად გადაცემული აქვს: \(task)")
+        } else {
+            print("დრონს არ აქვს დავალება.")
+        }
+    }
+}
+//7-OrbitronSpaceStation-ი შევქმნათ, შიგნით ავაწყოთ ჩვენი მოდულები ControlCenter-ი, ResearchLab-ი და LifeSupportSystem-ა. ასევე ამ მოდულებისთვის გავაკეთოთ თითო დრონი და მივაწოდოთ ამ მოდულებს რათა მათ გამოყენება შეძლონ.ასევე ჩვენს OrbitronSpaceStation-ს შევუქმნათ ფუნქციონალი lockdown-ის რომელიც საჭიროების შემთხვევაში controlCenter-ს დალოქავს.
+class OrbitronSpaceStation {
+    let controlCenter: ControlCenter
+    let researchLab: ResearchLab
+    let lifeSupportSystem: LifeSupportSystem
+    var isLockedDown: Bool
+    
+    init(controlCenter: ControlCenter, researchLab: ResearchLab, lifeSupportSystem: LifeSupportSystem, isLockedDown: Bool) {
+        self.controlCenter = controlCenter
+        self.researchLab = researchLab
+        self.lifeSupportSystem = lifeSupportSystem
+        self.isLockedDown = false
+      
+        let controlCenterDrone =  Drone(assignedModule: controlCenter)
+        let researchLabDrone = Drone(assignedModule: researchLab)
+        let lifeSupportDrone = Drone(assignedModule: lifeSupportSystem)
+    }
+    func lockdown() {
+         if isLockedDown {
+             print("OrbitronSpaceStation ლოქდაუნშია")
+         } else {
+             print("ტყუილი განგაში")
+         }
+    }
+}
+
+//8-MissionControl.//With properties: spaceStation: OrbitronSpaceStation? (optional).
+//Method რომ დაუკავშირდეს OrbitronSpaceStation-ს და დაამყაროს მასთან კავშირი.
+//Method requestControlCenterStatus-ი.
+//Method requestOxygenStatus-ი.
+//Method requestDroneStatus რომელიც გაარკვევს რას აკეთებს კონკრეტული მოდულის დრონი.
+
+class MissionControl {
+    var spaceStation: OrbitronSpaceStation?
+    
+    init(spaceStation: OrbitronSpaceStation? = nil) {
+        self.spaceStation = spaceStation
+    }
+    func connectToSpaceStation(spaceStation: OrbitronSpaceStation) {
+        self.spaceStation = spaceStation
+    }
+    func requestControlCenterStatus() {
+        if let controlCenter = spaceStation {
+            print("კონტროლ ცენტრი ჩაკეტილია \(controlCenter.isLockedDown ? "კი" : "არა")")
+              } else {
+                  print("არ შედგა კავშირი.")
+              }
+          }
+    func requestOxygenStatus() {
+        if let lifeSupportSystem = spaceStation {
+            print("ჟანგბადის დონე: \(lifeSupportSystem)%")
+        } else {
+            print("არ შედგა კავშირი")
+        }
+    }
+func requestDroneStatus(module: StationModule) {
+        if let drone = module.drone {
+            drone.checkDroneStatus()
+        } else {
+            print("დრონი არ არის დაკავშირებული\(module.moduleName) მოდულთან.")
+        }
+    }
+}
+ 
+//9-და ბოლოს
+//შევქმნათ OrbitronSpaceStation,
+//შევქმნათ MissionControl-ი,
+//missionControl-ი დავაკავშიროთ OrbitronSpaceStation სისტემასთან,
+//როცა კავშირი შედგება missionControl-ით მოვითხოვოთ controlCenter-ის status-ი.
+//controlCenter-ის, researchLab-ის და lifeSupport-ის მოდულების დრონებს დავურიგოთ თასქები.
+//შევამოწმოთ დრონების სტატუსები.
+//შევამოწმოთ ჟანგბადის რაოდენობა.
+//შევამოწმოთ ლოქდაუნის ფუნქციონალი და შევამოწმოთ დაილოქა თუ არა ხომალდი სწორი პაროლი შევიყვანეთ თუ არა.
+
+let controlCenter = ControlCenter(moduleName: "Control Center", drone: nil, isLockedDown: false, securityCode: "858919")
+let researchLab = ResearchLab(moduleName: "Research Lab", drone: nil, sampleArray: [])
+let lifeSupportSystem = LifeSupportSystem(moduleName: "Life Support System", drone: nil, oxygenLevel: 100)
+
+
+let orbitronSpaceStation = OrbitronSpaceStation(controlCenter: controlCenter, researchLab: researchLab, lifeSupportSystem: lifeSupportSystem, isLockedDown: false)
+let missionControl = MissionControl()
+
+missionControl.connectToSpaceStation(spaceStation: orbitronSpaceStation)
+missionControl.requestControlCenterStatus()
+
+
+let controlCenterDrone = Drone(task: "Control Center Task", assignedModule: controlCenter, missionControlLink: missionControl)
+let researchLabDrone = Drone(task: "Research Lab Task", assignedModule: researchLab, missionControlLink: missionControl)
+let lifeSupportDrone = Drone(task: "Life Support Task", assignedModule: lifeSupportSystem, missionControlLink: missionControl)
+
+
+controlCenterDrone.checkDroneStatus()
+researchLabDrone.checkDroneStatus()
+lifeSupportDrone.checkDroneStatus()
+
+missionControl.requestOxygenStatus()
+
+
+orbitronSpaceStation.lockdown
+missionControl.requestControlCenterStatus()
+
+
 
